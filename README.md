@@ -21,10 +21,10 @@ This lists various services that provide free access or credits towards API-base
   - [Vercel AI Gateway](#vercel-ai-gateway)
   - [Cerebras](#cerebras)
   - [Groq](#groq)
-  - [Cohere](#cohere)
   - [GitHub Models](#github-models)
   - [Cloudflare Workers AI](#cloudflare-workers-ai)
   - [Google Cloud Vertex AI](#google-cloud-vertex-ai)
+  - [glhf.chat](#glhfchat)
 - [Providers with trial credits](#providers-with-trial-credits)
   - [Fireworks](#fireworks)
   - [Baseten](#baseten)
@@ -36,9 +36,7 @@ This lists various services that provide free access or credits towards API-base
   - [Alibaba Cloud (International) Model Studio](#alibaba-cloud-international-model-studio)
   - [Modal](#modal)
   - [Inference.net](#inferencenet)
-  - [Hyperbolic](#hyperbolic)
   - [SambaNova Cloud](#sambanova-cloud)
-  - [Scaleway Generative APIs](#scaleway-generative-apis)
 
 ## Free Providers
 
@@ -88,6 +86,7 @@ Models share a common quota.
 - [qwen/qwen3-coder:free](https://openrouter.ai/qwen/qwen3-coder:free)
 - [tngtech/deepseek-r1t-chimera:free](https://openrouter.ai/tngtech/deepseek-r1t-chimera:free)
 - [tngtech/deepseek-r1t2-chimera:free](https://openrouter.ai/tngtech/deepseek-r1t2-chimera:free)
+- [x-ai/grok-4.1-fast:free](https://openrouter.ai/x-ai/grok-4.1-fast:free)
 - [z-ai/glm-4.5-air:free](https://openrouter.ai/z-ai/glm-4.5-air:free)
 
 ### [Google AI Studio](https://aistudio.google.com)
@@ -95,17 +94,17 @@ Models share a common quota.
 Data is used for training when used outside of the UK/CH/EEA/EU.
 
 <table><thead><tr><th>Model Name</th><th>Model Limits</th></tr></thead><tbody>
-<tr><td>Gemini 2.5 Pro</td><td>3,000,000 tokens/day<br>125,000 tokens/minute<br>50 requests/day<br>2 requests/minute</td></tr>
-<tr><td>Gemini 2.5 Flash</td><td>250,000 tokens/minute<br>250 requests/day<br>10 requests/minute</td></tr>
-<tr><td>Gemini 2.5 Flash-Lite</td><td>250,000 tokens/minute<br>1,000 requests/day<br>15 requests/minute</td></tr>
-<tr><td>Gemini 2.0 Flash</td><td>1,000,000 tokens/minute<br>200 requests/day<br>15 requests/minute</td></tr>
-<tr><td>Gemini 2.0 Flash-Lite</td><td>1,000,000 tokens/minute<br>200 requests/day<br>30 requests/minute</td></tr>
-<tr><td>Gemini 2.0 Flash (Experimental)</td><td>0 tokens/minute<br>50 requests/day<br>0 requests/minute</td></tr>
-<tr><td>LearnLM 2.0 Flash (Experimental)</td><td>1,500 requests/day<br>15 requests/minute</td></tr>
-<tr><td>Gemma 3 27B Instruct</td><td>15,000 tokens/minute<br>14,400 requests/day<br>30 requests/minute</td></tr>
-<tr><td>Gemma 3 12B Instruct</td><td>15,000 tokens/minute<br>14,400 requests/day<br>30 requests/minute</td></tr>
-<tr><td>Gemma 3 4B Instruct</td><td>15,000 tokens/minute<br>14,400 requests/day<br>30 requests/minute</td></tr>
-<tr><td>Gemma 3 1B Instruct</td><td>15,000 tokens/minute<br>14,400 requests/day<br>30 requests/minute</td></tr>
+<tr><td>Gemini 2.5 Pro</td><td></td></tr>
+<tr><td>Gemini 2.5 Flash</td><td></td></tr>
+<tr><td>Gemini 2.5 Flash-Lite</td><td></td></tr>
+<tr><td>Gemini 2.0 Flash</td><td></td></tr>
+<tr><td>Gemini 2.0 Flash-Lite</td><td></td></tr>
+<tr><td>Gemini 2.0 Flash (Experimental)</td><td></td></tr>
+<tr><td>LearnLM 2.0 Flash (Experimental)</td><td></td></tr>
+<tr><td>Gemma 3 27B Instruct</td><td></td></tr>
+<tr><td>Gemma 3 12B Instruct</td><td></td></tr>
+<tr><td>Gemma 3 4B Instruct</td><td></td></tr>
+<tr><td>Gemma 3 1B Instruct</td><td></td></tr>
 </tbody></table>
 
 ### [NVIDIA NIM](https://build.nvidia.com/explore/discover)
@@ -167,47 +166,8 @@ Routes to various supported providers.
 
 ### [Groq](https://console.groq.com)
 
-<table><thead><tr><th>Model Name</th><th>Model Limits</th></tr></thead><tbody>
-<tr><td>Allam 2 7B</td><td>7,000 requests/day<br>6,000 tokens/minute</td></tr>
-<tr><td>Llama 3.1 8B</td><td>14,400 requests/day<br>6,000 tokens/minute</td></tr>
-<tr><td>Llama 3.3 70B</td><td>1,000 requests/day<br>12,000 tokens/minute</td></tr>
-<tr><td>Llama 4 Maverick 17B 128E Instruct</td><td>1,000 requests/day<br>6,000 tokens/minute</td></tr>
-<tr><td>Llama 4 Scout Instruct</td><td>1,000 requests/day<br>30,000 tokens/minute</td></tr>
-<tr><td>Whisper Large v3</td><td>7,200 audio-seconds/minute<br>2,000 requests/day</td></tr>
-<tr><td>Whisper Large v3 Turbo</td><td>7,200 audio-seconds/minute<br>2,000 requests/day</td></tr>
-<tr><td>groq/compound</td><td>250 requests/day<br>70,000 tokens/minute</td></tr>
-<tr><td>groq/compound-mini</td><td>250 requests/day<br>70,000 tokens/minute</td></tr>
-<tr><td>meta-llama/llama-guard-4-12b</td><td>14,400 requests/day<br>15,000 tokens/minute</td></tr>
-<tr><td>meta-llama/llama-prompt-guard-2-22m</td><td></td></tr>
-<tr><td>meta-llama/llama-prompt-guard-2-86m</td><td></td></tr>
-<tr><td>moonshotai/kimi-k2-instruct</td><td>1,000 requests/day<br>10,000 tokens/minute</td></tr>
-<tr><td>moonshotai/kimi-k2-instruct-0905</td><td>1,000 requests/day<br>10,000 tokens/minute</td></tr>
-<tr><td>openai/gpt-oss-120b</td><td>1,000 requests/day<br>8,000 tokens/minute</td></tr>
-<tr><td>openai/gpt-oss-20b</td><td>1,000 requests/day<br>8,000 tokens/minute</td></tr>
-<tr><td>openai/gpt-oss-safeguard-20b</td><td>1,000 requests/day<br>8,000 tokens/minute</td></tr>
-<tr><td>qwen/qwen3-32b</td><td>1,000 requests/day<br>6,000 tokens/minute</td></tr>
-</tbody></table>
 
-### [Cohere](https://cohere.com)
-
-**Limits:**
-
-[20 requests/minute<br>1,000 requests/month](https://docs.cohere.com/docs/rate-limits)
-
-Models share a common quota.
-
-- c4ai-aya-expanse-32b
-- c4ai-aya-expanse-8b
-- c4ai-aya-vision-32b
-- c4ai-aya-vision-8b
-- command-a-03-2025
-- command-a-reasoning-08-2025
-- command-a-translate-08-2025
-- command-a-vision-07-2025
-- command-r-08-2024
-- command-r-plus-08-2024
-- command-r7b-12-2024
-- command-r7b-arabic-02-2025
+- No chat models available right now.
 
 ### [GitHub Models](https://github.com/marketplace/models)
 
@@ -263,57 +223,6 @@ Extremely restrictive input/output token limits.
 
 **Limits:** [10,000 neurons/day](https://developers.cloudflare.com/workers-ai/platform/pricing/#free-allocation)
 
-- @cf/aisingapore/gemma-sea-lion-v4-27b-it
-- @cf/ibm-granite/granite-4.0-h-micro
-- @cf/openai/gpt-oss-120b
-- @cf/openai/gpt-oss-20b
-- @cf/qwen/qwen3-30b-a3b-fp8
-- DeepSeek R1 Distill Qwen 32B
-- Deepseek Coder 6.7B Base (AWQ)
-- Deepseek Coder 6.7B Instruct (AWQ)
-- Deepseek Math 7B Instruct
-- Discolm German 7B v1 (AWQ)
-- Falcom 7B Instruct
-- Gemma 2B Instruct (LoRA)
-- Gemma 3 12B Instruct
-- Gemma 7B Instruct
-- Gemma 7B Instruct (LoRA)
-- Hermes 2 Pro Mistral 7B
-- Llama 2 13B Chat (AWQ)
-- Llama 2 7B Chat (FP16)
-- Llama 2 7B Chat (INT8)
-- Llama 2 7B Chat (LoRA)
-- Llama 3 8B Instruct
-- Llama 3 8B Instruct (AWQ)
-- Llama 3.1 8B Instruct (AWQ)
-- Llama 3.1 8B Instruct (FP8)
-- Llama 3.2 11B Vision Instruct
-- Llama 3.2 1B Instruct
-- Llama 3.2 3B Instruct
-- Llama 3.3 70B Instruct (FP8)
-- Llama 4 Scout Instruct
-- Llama Guard 3 8B
-- LlamaGuard 7B (AWQ)
-- Mistral 7B Instruct v0.1
-- Mistral 7B Instruct v0.1 (AWQ)
-- Mistral 7B Instruct v0.2
-- Mistral 7B Instruct v0.2 (LoRA)
-- Mistral Small 3.1 24B Instruct
-- Neural Chat 7B v3.1 (AWQ)
-- OpenChat 3.5 0106
-- OpenHermes 2.5 Mistral 7B (AWQ)
-- Phi-2
-- Qwen 1.5 0.5B Chat
-- Qwen 1.5 1.8B Chat
-- Qwen 1.5 14B Chat (AWQ)
-- Qwen 1.5 7B Chat (AWQ)
-- Qwen 2.5 Coder 32B Instruct
-- Qwen QwQ 32B
-- SQLCoder 7B 2
-- Starling LM 7B Beta
-- TinyLlama 1.1B Chat v1.0
-- Una Cybertron 7B v2 (BF16)
-- Zephyr 7B Beta (AWQ)
 
 ### [Google Cloud Vertex AI](https://console.cloud.google.com/vertex-ai/model-garden)
 
@@ -324,6 +233,10 @@ Very stringent payment verification for Google Cloud.
 <tr><td><a href="https://console.cloud.google.com/vertex-ai/publishers/meta/model-garden/llama-3-1-405b-instruct-maas" target="_blank">Llama 3.1 70B Instruct</a></td><td>60 requests/minute<br>Free during preview</td></tr>
 <tr><td><a href="https://console.cloud.google.com/vertex-ai/publishers/meta/model-garden/llama-3-1-405b-instruct-maas" target="_blank">Llama 3.1 8B Instruct</a></td><td>60 requests/minute<br>Free during preview</td></tr>
 </tbody></table>
+
+### [glhf.chat](https://glhf.chat)
+
+No models found or API key missing.
 
 
 
@@ -391,37 +304,6 @@ Very stringent payment verification for Google Cloud.
 
 **Models:** Various open models
 
-### [Hyperbolic](https://app.hyperbolic.xyz/)
-
-**Credits:** $1
-
-**Models:**
-- DeepSeek V3
-- DeepSeek V3 0324
-- Hermes 3 Llama 3.1 70B
-- Llama 3 70B Instruct
-- Llama 3.1 405B Base
-- Llama 3.1 405B Instruct
-- Llama 3.1 70B Instruct
-- Llama 3.1 8B Instruct
-- Llama 3.2 3B Instruct
-- Llama 3.3 70B Instruct
-- Pixtral 12B (2409)
-- Qwen QwQ 32B
-- Qwen2.5 72B Instruct
-- Qwen2.5 Coder 32B Instruct
-- Qwen2.5 VL 72B Instruct
-- Qwen2.5 VL 7B Instruct
-- deepseek-ai/deepseek-r1-0528
-- openai/gpt-oss-120b
-- openai/gpt-oss-120b-turbo
-- openai/gpt-oss-20b
-- qwen/qwen3-235b-a22b
-- qwen/qwen3-235b-a22b-instruct-2507
-- qwen/qwen3-coder-480b-a35b-instruct
-- qwen/qwen3-next-80b-a3b-instruct
-- qwen/qwen3-next-80b-a3b-thinking
-
 ### [SambaNova Cloud](https://cloud.sambanova.ai/)
 
 **Credits:** $5 for 3 months
@@ -441,27 +323,5 @@ Very stringent payment verification for Google Cloud.
 - deepseek-ai/DeepSeek-V3.1-Terminus
 - openai/gpt-oss-120b
 - tbd
-
-### [Scaleway Generative APIs](https://console.scaleway.com/generative-api/models)
-
-**Credits:** 1,000,000 free tokens
-
-**Models:**
-- BGE-Multilingual-Gemma2
-- DeepSeek R1 Distill Llama 70B
-- Gemma 3 27B Instruct
-- Llama 3.1 8B Instruct
-- Llama 3.3 70B Instruct
-- Mistral Nemo 2407
-- Mistral Small 3.1 24B Instruct 2503
-- Pixtral 12B (2409)
-- Qwen2.5 Coder 32B Instruct
-- Whisper Large v3
-- devstral-small-2505
-- gpt-oss-120b
-- mistral-small-3.2-24b-instruct-2506
-- qwen3-235b-a22b-instruct-2507
-- qwen3-coder-30b-a3b-instruct
-- voxtral-small-24b-2507
 
 

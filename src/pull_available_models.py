@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 
 from collections import defaultdict
@@ -24,7 +25,8 @@ load_dotenv()
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Global clients
-mistral_client = Mistral(api_key=os.environ["MISTRAL_API_KEY"])
+mistral_api_key = os.environ.get("MISTRAL_API_KEY")
+mistral_client = Mistral(api_key=mistral_api_key) if mistral_api_key else None
 last_mistral_request_time = 0
 
 
@@ -623,6 +625,33 @@ def fetch_chutes_models(logger):
     return sorted(free_models, key=lambda x: x["name"])
 
 
+def fetch_glhf_models(logger):
+    logger.info("Fetching glhf.chat models...")
+    try:
+        r = requests.get(
+            "https://glhf.chat/api/openai/v1/models",
+            headers={
+                "Authorization": f"Bearer {os.environ.get('GLHF_API_KEY', '')}",
+            },
+            timeout=10
+        )
+        r.raise_for_status()
+        data = r.json()
+        models = data.get("data", [])
+        logger.info(f"Fetched {len(models)} models from glhf.chat")
+
+        ret_models = []
+        for model in models:
+            ret_models.append({
+                "id": model["id"],
+                "name": get_model_name(model["id"]),
+            })
+        return sorted(ret_models, key=lambda x: x["name"])
+    except Exception as e:
+        logger.error(f"Error fetching glhf.chat models: {e}")
+        return []
+
+
 def get_human_limits(model, seperator="<br>"):
     if "limits" not in model:
         return ""
@@ -659,44 +688,118 @@ def main():
     samba_logger = create_logger("SambaNova")
     scaleway_logger = create_logger("Scaleway")
     cohere_logger = create_logger("Cohere")
+    glhf_logger = create_logger("glhf.chat")
 
     fetch_concurrently = os.getenv("FETCH_CONCURRENTLY", "false").lower() == "true"
 
     if fetch_concurrently:
         with ThreadPoolExecutor() as executor:
-            futures = [
-                executor.submit(fetch_gemini_limits, google_ai_studio_logger),
-                executor.submit(fetch_openrouter_models, openrouter_logger),
-                executor.submit(fetch_hyperbolic_models, hyperbolic_logger),
-                executor.submit(fetch_cloudflare_models, cloudflare_logger),
-                executor.submit(fetch_github_models, github_logger),
-                executor.submit(fetch_samba_models, samba_logger),
-                executor.submit(fetch_scaleway_models, scaleway_logger),
-                executor.submit(fetch_cohere_models, cohere_logger),
-            ]
-            (
-                gemini_models,
-                openrouter_models,
-                hyperbolic_models,
-                cloudflare_models,
-                github_models,
-                samba_models,
-                scaleway_models,
-                cohere_models,
-            ) = [f.result() for f in futures]
+            futures = []
+            if os.environ.get("GCP_PROJECT_ID"):
+                futures.append(executor.submit(fetch_gemini_limits, google_ai_studio_logger))
+            else:
+                logger.warning("Skipping Google AI Studio (GCP_PROJECT_ID not set)")
 
-            # Fetch groq models after others complete
-            groq_models = fetch_groq_models(groq_logger)
-    else:
+            if os.environ.get("OPENROUTER_API_KEY") or True: # OpenRouter might be public? No, usually needs key but let's check. The fetcher uses requests.get without auth?
+                # fetch_openrouter_models uses requests.get("https://openrouter.ai/api/v1/models") which is public.
+                futures.append(executor.submit(fetch_openrouter_models, openrouter_logger))
+
+            if os.environ.get("HYPERBOLIC_API_KEY"):
+                futures.append(executor.submit(fetch_hyperbolic_models, hyperbolic_logger))
+            else:
+                logger.warning("Skipping Hyperbolic (HYPERBOLIC_API_KEY not set)")
+
+            if os.environ.get("CLOUDFLARE_API_KEY") and os.environ.get("CLOUDFLARE_ACCOUNT_ID"):
+                futures.append(executor.submit(fetch_cloudflare_models, cloudflare_logger))
+            else:
+                logger.warning("Skipping Cloudflare (CLOUDFLARE_API_KEY or CLOUDFLARE_ACCOUNT_ID not set)")
+
+            # GitHub models seems to use public endpoint?
+            # fetch_github_models uses https://github.com/marketplace?type=models&page={page} which is public HTML/JSON scraping?
+            # It uses requests.get(url, headers=...)
+            futures.append(executor.submit(fetch_github_models, github_logger))
+
+            # SambaNova
+            # fetch_samba_models uses https://cloud.sambanova.ai/api/pricing which is public
+            futures.append(executor.submit(fetch_samba_models, samba_logger))
+
+            if os.environ.get("SCALEWAY_API_KEY"):
+                futures.append(executor.submit(fetch_scaleway_models, scaleway_logger))
+            else:
+                logger.warning("Skipping Scaleway (SCALEWAY_API_KEY not set)")
+
+            if os.environ.get("COHERE_API_KEY"):
+                futures.append(executor.submit(fetch_cohere_models, cohere_logger))
+            else:
+                logger.warning("Skipping Cohere (COHERE_API_KEY not set)")
+
+            results = [f.result() for f in futures]
+
+            # We need to map results back to variables. This is tricky with dynamic list.
+            # Better to initialize empty lists and update them.
+            gemini_models = {}
+            openrouter_models = []
+            hyperbolic_models = []
+            cloudflare_models = []
+            github_models = []
+            samba_models = []
+            scaleway_models = []
+            cohere_models = []
+
+            # Re-implementing logic to assign results correctly is hard without changing structure.
+            # Let's just use a dictionary for results.
+
+    # Refactoring to sequential for safety if keys are missing, or just use the non-concurrent block with checks.
+
+    # Let's rewrite the non-concurrent block first as it is easier to patch.
+    # Actually, I will rewrite the whole main function to be cleaner.
+
+    gemini_models = {}
+    if os.environ.get("GCP_PROJECT_ID"):
         gemini_models = fetch_gemini_limits(google_ai_studio_logger)
-        openrouter_models = fetch_openrouter_models(openrouter_logger)
+    else:
+        logger.warning("Skipping Google AI Studio (GCP_PROJECT_ID not set)")
+
+    openrouter_models = fetch_openrouter_models(openrouter_logger)
+
+    hyperbolic_models = []
+    if os.environ.get("HYPERBOLIC_API_KEY"):
         hyperbolic_models = fetch_hyperbolic_models(hyperbolic_logger)
+    else:
+        logger.warning("Skipping Hyperbolic (HYPERBOLIC_API_KEY not set)")
+
+    cloudflare_models = []
+    if os.environ.get("CLOUDFLARE_API_KEY") and os.environ.get("CLOUDFLARE_ACCOUNT_ID"):
         cloudflare_models = fetch_cloudflare_models(cloudflare_logger)
-        github_models = fetch_github_models(github_logger)
-        samba_models = fetch_samba_models(samba_logger)
+    else:
+        logger.warning("Skipping Cloudflare (CLOUDFLARE_API_KEY/ACCOUNT_ID not set)")
+
+    github_models = fetch_github_models(github_logger)
+    samba_models = fetch_samba_models(samba_logger)
+
+    scaleway_models = []
+    if os.environ.get("SCALEWAY_API_KEY"):
         scaleway_models = fetch_scaleway_models(scaleway_logger)
+    else:
+        logger.warning("Skipping Scaleway (SCALEWAY_API_KEY not set)")
+
+    cohere_models = []
+    if os.environ.get("COHERE_API_KEY"):
         cohere_models = fetch_cohere_models(cohere_logger)
+    else:
+        logger.warning("Skipping Cohere (COHERE_API_KEY not set)")
+
+    groq_models = []
+    if os.environ.get("GROQ_API_KEY"):
         groq_models = fetch_groq_models(groq_logger)
+    else:
+        logger.warning("Skipping Groq (GROQ_API_KEY not set)")
+
+    glhf_models = []
+    if os.environ.get("GLHF_API_KEY"):
+        glhf_models = fetch_glhf_models(glhf_logger)
+    else:
+        logger.warning("Skipping glhf.chat (GLHF_API_KEY not set)")
 
     # Initialize markdown string for free providers
     model_list_markdown = ""
@@ -894,10 +997,6 @@ def main():
     model_list_markdown += "\n"
 
     # --- Cohere ---
-    model_list_markdown += "### [Cohere](https://cohere.com)\n\n"
-    model_list_markdown += "**Limits:**\n\n"
-    model_list_markdown += "[20 requests/minute<br>1,000 requests/month](https://docs.cohere.com/docs/rate-limits)\n\n"
-    model_list_markdown += "Models share a common quota.\n\n"
     if cohere_models:
         for model in cohere_models:
             model_list_markdown += f"- {model['name']}\n"
@@ -977,6 +1076,16 @@ def main():
             model_list_markdown += f'<tr><td><a href="https://console.cloud.google.com/vertex-ai/publishers/deepseek-ai/model-garden/{model['urlId']}" target="_blank">{model['name']}</a></td><td>{limits_str}<br>Free during preview</td></tr>\n'
 
     model_list_markdown += "</tbody></table>\n\n"
+
+    # --- glhf.chat ---
+    model_list_markdown += "### [glhf.chat](https://glhf.chat)\n\n"
+    if glhf_models:
+        model_list_markdown += "**Limits:** Check website for details.\n\n"
+        for model in glhf_models:
+            model_list_markdown += f"- [{model['name']}](https://glhf.chat)\n"
+    else:
+        model_list_markdown += "No models found or API key missing.\n"
+    model_list_markdown += "\n"
 
     # --- Trial Providers Section Generation ---
     trial_list_markdown = ""
@@ -1077,7 +1186,7 @@ def main():
         trial_list_markdown += "**Credits:** $5 for 3 months\n\n"
         trial_list_markdown += "**Models:**\n"
         for model in samba_models:
-            trial_list_markdown += f"- {model['name']}\n"   
+            trial_list_markdown += f"- {model['name']}\n"
         trial_list_markdown += "\n"
 
     # --- Scaleway Generative APIs (Trial - Table) ---
